@@ -1,18 +1,21 @@
 "use client";
-import getCookie from "@/lib/getCookie";
+import { NotifContext } from "@/context/notifContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "@/context/userContext";
+import { FiLoader } from "react-icons/fi";
+import { ImSpinner2 } from "react-icons/im";
+import { Button } from "@/components/ui/button";
+import { getCookie } from "@/lib/utils";
 
 export default function Auth() {
     const router = useRouter();
+    const { refresh } = useContext(UserContext);
+    const { addNotif } = useContext(NotifContext);
 
-    const [status, setStatus] = useState<number>(0);
-    //-1 not logged in
-    // 0 loading
-    // 1 successful log in attempt
-    // 2 logged in
+    const [status, setStatus] = useState<-1 | 0 | 1>(0);
 
     useEffect(() => {
         const token = getCookie("TOKEN");
@@ -31,18 +34,33 @@ export default function Auth() {
                     const json = await res.json();
 
                     if (json.success) {
-                        location.search = "?";
-                        setStatus(2);
+                        refresh();
+                        addNotif({
+                            id: window.crypto.randomUUID(),
+                            body: "Logged in.",
+                            type: "success"
+                        });
+
+                        new Promise(r => setTimeout(r, 2000))
+                            .then(() => router.push("/"));
                     } else {
                         setStatus(-1);
                     }
                 } catch (e) {
+                    addNotif({
+                        id: window.crypto.randomUUID(),
+                        body: "Sorry, something went wrong.",
+                        type: "error"
+                    });
+
                     console.error(e);
                 }
             })();
         } else if (token) {
-            setStatus(2);
-            return;
+            setStatus(1);
+
+            new Promise(r => setTimeout(r, 2000))
+                .then(() => router.push("/"));
         } else {
             setStatus(-1);
         }
@@ -67,39 +85,25 @@ export default function Auth() {
                 NittVoice
             </h1>
 
-            {
-                status === -1
-                    ? <Link
-                        href={`${dAuth.protocol}://${dAuth.host}${dAuth.path}?${dAuth.params}`}
-                        className="mt-4 overflow-hidden block rounded-xl"
-                    >
-                        <Image
-                            src="/dauth.png"
-                            alt="Dauth Login"
-                            width={160}
-                            height={80}
-                            priority
-                        />
-                    </Link>
-
-                    : status === 2
-                        ? <>
-                            <div className="p-2 w-40 h-12 text-sm grid place-items-center bg-neutral text-white rounded-lg">
-                                Logged In
-                            </div>
-
-                            <Link href="/" className="underline">
-                                Go Home
-                            </Link>
-                        </>
-
-                        : <div className="w-40 h-12 grid place-items-center rounded-xl text-center bg-neutral">
-                            <span className="loading loading-spinner bg-accent"></span>
-                            {
-                                status === 1 && "Success"
-                            }
-                        </div>
-            }
-        </div>
+            <div className="mt-4">
+                {status === -1 ? (
+                    <Button className="w-40 h-12 relative overflow-hidden" asChild>
+                        <Link href={`${dAuth.protocol}://${dAuth.host}${dAuth.path}?${dAuth.params}`}>
+                            <Image
+                                src="/dauth.png"
+                                alt="Dauth Login"
+                                fill
+                                priority
+                            />
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button className="w-40 h-12" disabled>
+                        <ImSpinner2 size={24} className="animate-spin" />
+                        {status === 0 ? "Please wait" : "Redirecting"}
+                    </Button>
+                )}
+            </div>
+        </div >
     );
 }

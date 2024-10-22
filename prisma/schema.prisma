@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String     @id @default(cuid())
+    name      String
+    email     String
+    phone     String?
+    gender    String?
+    createdAt DateTime   @default(dbgenerated("timezone('utc', now())"))
+    updatedAt DateTime   @updatedAt
+    posts     Post[]
+    reactions Reaction[]
+}
+
+model Post {
+    id        String     @id @default(dbgenerated("gen_random_uuid()"))
+    title     String
+    body      String?
+    media     String?
+    createdAt DateTime?  @default(dbgenerated("timezone('utc', now())"))
+    updatedAt DateTime?  @updatedAt
+    authorId  String
+    author    User       @relation(fields: [authorId], references: [id])
+    reactions Reaction[]
+}
+
+model Reaction {
+    id           String    @id @default(cuid())
+    reactionType String
+    reactorId    String
+    reactor      User      @relation(fields: [reactorId], references: [id])
+    postId       String
+    post         Post      @relation(fields: [postId], references: [id])
+    createdAt    DateTime? @default(dbgenerated("timezone('utc', now())"))
+}

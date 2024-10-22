@@ -1,7 +1,7 @@
-import { createClient } from "@/lib/supabase";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { UserType, UserTypeInsert } from "@/lib/types";
+import { PrismaClient } from "@prisma/client";
+import { respond } from "@/lib/utils";
 
 export async function GET(req: Request) {
     const params = new URLSearchParams(req.url.split("?").pop());
@@ -18,27 +18,34 @@ export async function GET(req: Request) {
             return respond(400, "Bad Oauth Code");
         }
 
-        let user = await getOauthUser(accessToken);
-        
-        if (!user?.email) {
+        let dAuthUser: {
+            email: string;
+            name: string;
+            phoneNumber: string;
+            gender: string;
+        } = await getOauthUser(accessToken);
+
+        if (!dAuthUser?.email) {
             return respond(400, "No User found from Oauth Provider");
         }
 
-        user.id = user.email.split("@").shift();
-        user = {
-            id: user.id,
-            name: user.name,
-            gender: user.gender,
-            phone: user.phoneNumber
+        const user = {
+            id: dAuthUser.email.split("@").shift()!,
+            name: dAuthUser.name,
+            email: dAuthUser.email,
+            phone: dAuthUser.phoneNumber,
+            gender: dAuthUser.gender
         };
+
+        const returnedUser = await upsertUser(user);
         
-        const jwtToken = jwt.sign(user, process.env.SUPABASE_JWT_SECRET!);
+        const jwtToken = jwt.sign(returnedUser, process.env.JWT_SECRET!)
+        
+        cookies().set("TOKEN", jwtToken, {
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 28),
+        });
 
-        await upsertUser(user, jwtToken);
-
-        cookies().set("TOKEN", jwtToken);
-
-        return respond(200, "ok");
+        return respond(200, "ok", returnedUser);
     } catch (e) {
         console.error(e);
 
@@ -46,35 +53,32 @@ export async function GET(req: Request) {
     }
 }
 
-async function upsertUser(user: UserTypeInsert, jwtToken: string) {
-    const supabase = createClient(jwtToken);
-    
-    const { data, error: error1 } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle<UserType>();
+async function upsertUser({
+    id, name, email, gender, phone
+}: {
+    id: string,
+    name: string,
+    email: string,
+    gender: string,
+    phone: string
+}) {
+    const prisma = new PrismaClient();
 
-    if (error1) throw error1;
+    const user = {
+        id,
+        name,
+        email,
+        gender,
+        phone
+    };
 
-    if (!data) {
-        const { error: error2 } = await supabase
-            .from("users")
-            .insert<UserTypeInsert>(user);
+    const returnedUser = await prisma.user.upsert({
+        create: user,
+        update: user,
+        where: { id: user.id }
+    });
 
-        console.log("Inserting");
-
-        if (error2) throw error2;
-    } else {
-        const { error: error2 } = await supabase
-            .from("users")
-            .update(user)
-            .eq("id", user.id);
-
-        console.log("Updating");
-
-        if (error2) throw error2;
-    }
+    return returnedUser;
 }
 
 async function getOauthUser(token: string) {
@@ -85,9 +89,9 @@ async function getOauthUser(token: string) {
         }
     });
 
-    const user = await res.json();
+    const dAuthUser = await res.json();
 
-    return user;
+    return dAuthUser;
 }
 
 async function getAccessToken(code: string): Promise<string> {
@@ -111,16 +115,4 @@ async function getAccessToken(code: string): Promise<string> {
     const json = await tokenRes.json();
 
     return json.access_token;
-}
-
-function respond(status: number, message: string): Response {
-    return new Response(JSON.stringify({
-        success: status >= 200 && status < 300,
-        message
-    }), {
-        status,
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
 }
