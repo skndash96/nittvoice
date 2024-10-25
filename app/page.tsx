@@ -1,22 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Post } from "@prisma/client"
 import PostComponent from "./posts/[id]/components/post";
+import axios from "axios";
+import { NotifContext } from "@/context/notifContext";
 
 export default function Home() {
+    const { addNotif } = useContext(NotifContext);
+
     const [posts, setPosts] = useState<Post[]>([]);
 
-    const getPosts = async () => {
-        try {
-            const res = await fetch("/api/posts");
-            const { success, message, data } = await res.json();
-
-            if (!success) throw message;
-
-            setPosts(data);
-        } catch (e) {
-            console.error(e);
-        }
+    const getPosts = () => {
+        axios.get("/api/posts")
+        .then(({ data }) => setPosts(data))
+        .catch(error => {
+            console.log(error, error.message);
+            addNotif({
+                id: crypto.randomUUID(),
+                body: "Failed to fetch posts",
+                type: "error"
+            });
+        });
     };
 
     useEffect(() => {
@@ -25,9 +29,9 @@ export default function Home() {
     
     return (
         <main>
-            <ul className="py-4 max-w-lg mx-auto flex flex-col gap-4">
+            <ul className="py-4 max-w-lg mx-auto flex flex-col">
                 {posts.map(post => (
-                    <li key={post.id} className="border-b-2 border-solid last:border-none">
+                    <li key={post.id} className="">
                         <PostComponent data={post} />
                     </li>
                 ))}

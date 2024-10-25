@@ -21,8 +21,12 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-2">
-                <div className="relative">
-                    <Input className="pl-8 max-sm:max-w-0 transition-all bg-neutral-100 border-none outline-none shadow-none" placeholder="Search" />
+                <Button variant="ghost" size="icon" className="sm:hidden">
+                    <FiSearch className="text-primary" />
+                </Button>
+
+                <div className="relative max-sm:hidden">
+                    <Input className="pl-10 transition-all bg-neutral-100 border-none outline-none shadow-none" placeholder="Search" />
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
                 </div>
 

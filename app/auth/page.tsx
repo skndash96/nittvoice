@@ -9,6 +9,7 @@ import { FiLoader } from "react-icons/fi";
 import { ImSpinner2 } from "react-icons/im";
 import { Button } from "@/components/ui/button";
 import { getCookie } from "@/lib/utils";
+import axios from "axios";
 
 export default function Auth() {
     const router = useRouter();
@@ -25,47 +26,37 @@ export default function Auth() {
         const code = params.get("code");
 
         if (code) {
-            (async () => {
-                try {
-                    const res = await fetch("/api/auth" + "?code=" + code, {
-                        method: 'GET'
-                    });
-
-                    const json = await res.json();
-
-                    if (json.success) {
-                        refresh();
-                        addNotif({
-                            id: window.crypto.randomUUID(),
-                            body: "Logged in.",
-                            type: "success"
-                        });
-
-                        new Promise(r => setTimeout(r, 2000))
-                            .then(() => router.push("/"));
-                    } else {
-                        setStatus(-1);
-                    }
-                } catch (e) {
+            axios.get("/api/auth" + "?code=" + code)
+                .then(({ data }) => {
+                    refresh();
                     addNotif({
-                        id: window.crypto.randomUUID(),
+                        id: crypto.randomUUID(),
+                        body: "Logged in.",
+                        type: "success"
+                    });
+                    setStatus(1);
+                })
+                .catch(error => {
+                    setStatus(-1);
+                    addNotif({
+                        id: crypto.randomUUID(),
                         body: "Sorry, something went wrong.",
                         type: "error"
                     });
-
-                    console.error(e);
-                }
-            })();
+                    console.error(error);
+                });
         } else if (token) {
             setStatus(1);
-
-            new Promise(r => setTimeout(r, 2000))
-                .then(() => router.push("/"));
         } else {
             setStatus(-1);
         }
     }, []);
 
+    useEffect(() => {
+        if (status === 1) {
+            setTimeout(() => router.push("/"), 2000);
+        }
+    }, [status]);
     const dAuth = {
         protocol: "https",
         host: "auth.delta.nitt.edu",

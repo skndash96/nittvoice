@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { respond } from "@/lib/utils";
+import axios from "axios";
 
 export async function GET(req: Request) {
     const params = new URLSearchParams(req.url.split("?").pop());
@@ -82,16 +83,17 @@ async function upsertUser({
 }
 
 async function getOauthUser(token: string) {
-    const res = await fetch("https://auth.delta.nitt.edu/api/resources/user", {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    });
+    try {
+        const { data: dAuthUser } = await axios.post("https://auth.delta.nitt.edu/api/resources/user", null, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-    const dAuthUser = await res.json();
-
-    return dAuthUser;
+        return dAuthUser;
+    } catch (error) {
+        throw "Invalid Dauth Token";
+    }
 }
 
 async function getAccessToken(code: string): Promise<string> {
@@ -103,16 +105,17 @@ async function getAccessToken(code: string): Promise<string> {
         ["grant_type", "authorization_code"]
     ]);
 
-    const tokenRes = await fetch("https://auth.delta.nitt.edu/api/oauth/token", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: q.toString()
-    });
+    try {
+        const { data } = await axios.post("https://auth.delta.nitt.edu/api/oauth/token", q.toString(), {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        });
 
-    const json = await tokenRes.json();
-
-    return json.access_token;
+        return data.access_token;
+    } catch (error: any) {
+        console.log(error.message);
+        
+        throw "Invalid Dauth Code";
+    }
 }

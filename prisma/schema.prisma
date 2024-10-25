@@ -14,35 +14,39 @@ datasource db {
 }
 
 model User {
-    id        String     @id @default(cuid())
+    id        String   @id @default(dbgenerated("gen_random_uuid()"))
     name      String
     email     String
     phone     String?
     gender    String?
-    createdAt DateTime   @default(dbgenerated("timezone('utc', now())"))
-    updatedAt DateTime   @updatedAt
+    createdAt DateTime @default(dbgenerated("timezone('utc', now())")) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
     posts     Post[]
-    reactions Reaction[]
+    votes     Vote[]
 }
 
 model Post {
-    id        String     @id @default(dbgenerated("gen_random_uuid()"))
-    title     String
-    body      String?
-    media     String?
-    createdAt DateTime?  @default(dbgenerated("timezone('utc', now())"))
-    updatedAt DateTime?  @updatedAt
-    authorId  String
-    author    User       @relation(fields: [authorId], references: [id])
-    reactions Reaction[]
+    id            String    @id @default(dbgenerated("gen_random_uuid()"))
+    title         String
+    body          String?
+    media         String?
+    createdAt     DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
+    updatedAt     DateTime? @updatedAt @map("updated_at")
+    authorId      String    @map("author_id")
+    author        User      @relation(fields: [authorId], references: [id])
+    upvoteCount   Int       @default(0) @map("upvote_count")
+    downvoteCount Int       @default(0) @map("downvote_count")
+    votes         Vote[]
 }
 
-model Reaction {
-    id           String    @id @default(cuid())
-    reactionType String
-    reactorId    String
-    reactor      User      @relation(fields: [reactorId], references: [id])
-    postId       String
-    post         Post      @relation(fields: [postId], references: [id])
-    createdAt    DateTime? @default(dbgenerated("timezone('utc', now())"))
+model Vote {
+    id        String    @id @default(dbgenerated("gen_random_uuid()"))
+    voteType  Int       @map("vote_type")
+    voterId   String    @map("voter_id")
+    voter     User      @relation(fields: [voterId], references: [id])
+    postId    String    @map("post_id")
+    post      Post      @relation(fields: [postId], references: [id])
+    createdAt DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
+
+    @@unique([voterId, postId])
 }

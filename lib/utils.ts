@@ -16,16 +16,21 @@ export function getCookie(name: string): string|null {
 }
 
 export function respond(status: number, message: string, data?: unknown): Response {
-    return new Response(JSON.stringify({
-        success: status >= 200 && status < 300,
-        message,
-        data
-    }), {
-        status,
-        headers: {
-            "Content-Type": "application/json"
+    const success = status >= 200 && status < 300;
+
+    return new Response(
+        JSON.stringify(success ? (
+            data
+        ) : {
+            error: message
+        }),
+        {
+            status,
+            headers: {
+                "content-type": "application/json"
+            }
         }
-    });
+    );
 }
 
 export function displayDateAge(s: string) {

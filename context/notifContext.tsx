@@ -25,7 +25,11 @@ export function NotifsProvider({
     children: React.ReactNode
 }) {
     const [notifs, setNotifs] = useState<NotifType[]>([]);
-    const addNotif = (n: NotifType) => setNotifs(s => [...s, n]);
+
+    const addNotif = (n: NotifType) => {
+        setNotifs(s => [...s, n])
+    };
+    
     const removeNotif = (id: string) => setNotifs(s => {
         const idx = s.findIndex(n => n.id === id);
         if (idx !== -1) {
