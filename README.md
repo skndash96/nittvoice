@@ -1,5 +1,5 @@
 # NITT Voice
-Live @ [here](https://nittvoice.vercel.app)
+Live @ [here](https://nittvoice96.vercel.app)
 
 ## Auth Flow
 1. User goes to client`/login` and clicks the login with Dauth button
