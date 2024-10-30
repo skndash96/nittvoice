@@ -62,35 +62,37 @@ export default function PostComponent({
             </Link>
 
             {data.media && (
-                <div className="mt-2 relative w-full h-72 rounded-xl shadow-sm overflow-hidden bg-neutral/10">
+                <ul className="mt-2">
                     {data.media.map(m => (
-                        m.type === "video" ? (
-                            <video
-                                src={m.url}
-                                className="object-cover w-full h-full"
-                                controls={true}
-                            />
-                        ) : (
-                            <>
-                                <Image
+                        <li key={m.url}>
+                            {m.type === "video" ? (
+                                <video
                                     src={m.url}
-                                    alt={data.title}
-                                    fill
-                                    sizes="80vw 50vh"
-                                    className="opacity-50 object-center blur-lg"
-                                    loading="lazy"
+                                    className="object-contain w-full h-full"
+                                    controls={true}
                                 />
-                                <Image
-                                    fill
-                                    src={m.url}
-                                    alt={data.title}
-                                    loading="lazy"
-                                    className="object-contain shadow-xl"
-                                />
-                            </>
-                        )
+                            ) : (
+                                <div className="relative w-full h-72 rounded-xl overflow-hidden shadow-sm bg-neutral-200">
+                                    <Image
+                                        fill
+                                        src={m.url}
+                                        alt={data.title}
+                                        sizes="80vw 50vh"
+                                        className="opacity-50 object-center blur-lg"
+                                        loading="lazy"
+                                    />
+                                    <Image
+                                        fill
+                                        src={m.url}
+                                        alt={data.title}
+                                        loading="lazy"
+                                        className="object-contain shadow-xl"
+                                    />
+                                </div>
+                            )}
+                        </li>
                     ))}
-                </div>
+                </ul>
             )}
 
             {data.body && (

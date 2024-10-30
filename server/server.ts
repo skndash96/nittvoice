@@ -1,11 +1,14 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import apiRouter from './api';
+import helmet from 'helmet';
 
 const port = process.env.PORT || 5000;
 const dev = process.env.NODE_ENV !== 'production';
 
 const server = express();
+
+server.use(helmet());
 
 server.use(cookieParser());
 

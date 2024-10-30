@@ -88,6 +88,7 @@ export default function CreatePost() {
             await axios.post("/api/posts", formData);
             setTitle("");
             setBody("");
+            setPreview(null);
         } catch (e: any) {
             addNotif({
                 id: crypto.randomUUID(),
@@ -149,12 +150,12 @@ export default function CreatePost() {
                     </div>
                 </form>
 
-                <div className="p-4 ">
+                <div className="px-4">
                     <h1 className="text-lg font-bold">
                         Preview
                     </h1>
 
-                    <div className="mt-4 p-2 flex flex-col gap-2 border-2 border-emerald-500 border-dashed rounded-lg">
+                    <div className="mt-4 p-4 flex flex-col gap-2 border-2 border-emerald-500 border-dashed rounded-lg">
                         <h2 className="text-lg font-semibold">
                             {title.length ? title : (
                                 <Skeleton className="w-full h-4" />
