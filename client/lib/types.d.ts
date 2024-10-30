@@ -10,7 +10,7 @@ export type Post = {
     title: string
     authorId: string
     body: string
-    media: string
+    mediaId: string
     createdAt: Date
     updatedAt: Date
     commentCount: number
@@ -21,9 +21,14 @@ export type Post = {
 export type FullPost = Post & {
     author: User
     votes: PostVote[]
+    media: Media[]
     // comments: Comment[]
 }
 
+export type Media = {
+    url: string,
+    type: "image" | "video"
+}
 
 export type Comment = {
     id: string

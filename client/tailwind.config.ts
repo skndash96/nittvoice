@@ -54,7 +54,7 @@ const config: Config = {
     			}
     		},
     		animation: {
-    			slide: 'slide 2s linear 1'
+    			slide: 'slide 3s linear 1'
     		},
     		keyframes: {
     			slide: {

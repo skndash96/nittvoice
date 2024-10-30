@@ -29,6 +29,12 @@ export const getSinglePost : RequestHandler = async (req, res) => {
                         commentId: null,
                         voterId: user?.id
                     }
+                },
+                media: {
+                    select: {
+                        url: true,
+                        type: true
+                    }
                 }
             }
         });

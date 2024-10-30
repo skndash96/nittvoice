@@ -46,7 +46,7 @@ export default function PostComponent({
             addNotif({
                 id: crypto.randomUUID(),
                 type: "error",
-                body: error.response.data.error
+                body: error.response.data
             });
         }
     };
@@ -56,30 +56,42 @@ export default function PostComponent({
             <Avatar author={data.author} timestamp={data.createdAt} />
 
             <Link href={`/posts/${data.id}`}>
-                <h3 className="font-semibold text-lg">
+                <h3 className="font-semibold text-lg break-words">
                     {data.title}
                 </h3>
-
-                {data.media && (
-                    <div className="mt-2 relative w-full h-72 rounded-xl shadow-sm overflow-hidden bg-neutral/10">
-                        <Image
-                            src={data.media}
-                            alt={data.title}
-                            fill
-                            sizes="80vw 50vh"
-                            className="opacity-50 object-center blur-lg"
-                            loading="lazy"
-                        />
-                        <Image
-                            fill
-                            src={data.media}
-                            alt={data.title}
-                            loading="lazy"
-                            className="object-contain shadow-xl"
-                        />
-                    </div>
-                )}
             </Link>
+
+            {data.media && (
+                <div className="mt-2 relative w-full h-72 rounded-xl shadow-sm overflow-hidden bg-neutral/10">
+                    {data.media.map(m => (
+                        m.type === "video" ? (
+                            <video
+                                src={m.url}
+                                className="object-cover w-full h-full"
+                                controls={true}
+                            />
+                        ) : (
+                            <>
+                                <Image
+                                    src={m.url}
+                                    alt={data.title}
+                                    fill
+                                    sizes="80vw 50vh"
+                                    className="opacity-50 object-center blur-lg"
+                                    loading="lazy"
+                                />
+                                <Image
+                                    fill
+                                    src={m.url}
+                                    alt={data.title}
+                                    loading="lazy"
+                                    className="object-contain shadow-xl"
+                                />
+                            </>
+                        )
+                    ))}
+                </div>
+            )}
 
             {data.body && (
                 <p className="leading-5 font-sans">

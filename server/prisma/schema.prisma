@@ -1,5 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -14,10 +15,11 @@ model User {
     phone     String?
     gender    String?
     createdAt DateTime  @default(dbgenerated("timezone('utc', now())")) @map("created_at")
-    updatedAt DateTime  @updatedAt @default(dbgenerated("timezone('utc', now())"))@map("updated_at")
+    updatedAt DateTime  @default(dbgenerated("timezone('utc', now())")) @updatedAt @map("updated_at")
     posts     Post[]
     votes     Vote[]
     comments  Comment[]
+    media     Media[]
 }
 
 model Post {
@@ -26,14 +28,15 @@ model Post {
     author        User      @relation(fields: [authorId], references: [id])
     title         String
     body          String?
-    media         String?
+    mediaId       String?
     createdAt     DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
-    updatedAt     DateTime? @updatedAt @default(dbgenerated("timezone('utc', now())")) @map("updated_at")
+    updatedAt     DateTime? @default(dbgenerated("timezone('utc', now())")) @updatedAt @map("updated_at")
     commentCount  Int       @default(0) @map("comment_count")
     upvoteCount   Int       @default(0) @map("upvote_count")
     downvoteCount Int       @default(0) @map("downvote_count")
     votes         Vote[]
     comments      Comment[]
+    media         Media[]
 }
 
 model Comment {
@@ -47,7 +50,7 @@ model Comment {
     downvoteCount Int       @default(0) @map("downvote_count")
     votes         Vote[]
     createdAt     DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
-    updatedAt     DateTime? @updatedAt @default(dbgenerated("timezone('utc', now())")) @map("updated_at")
+    updatedAt     DateTime? @default(dbgenerated("timezone('utc', now())")) @updatedAt @map("updated_at")
 }
 
 model Vote {
@@ -60,8 +63,21 @@ model Vote {
     commentId String?   @map("comment_id")
     comment   Comment?  @relation(fields: [commentId], references: [id])
     createdAt DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
-    updatedAt DateTime? @updatedAt @default(dbgenerated("timezone('utc', now())")) @map("updated_at")
+    updatedAt DateTime? @default(dbgenerated("timezone('utc', now())")) @updatedAt @map("updated_at")
 
     @@unique([voterId, commentId])
     @@unique([voterId, postId])
+}
+
+model Media {
+    id        String    @id @default(dbgenerated("gen_random_uuid()"))
+    name      String
+    size      Int
+    type      String
+    url       String
+    postId    String    @map("post_id")
+    post      Post      @relation(fields: [postId], references: [id])
+    userId    String    @map("user_id")
+    user      User      @relation(fields: [userId], references: [id])
+    createdAt DateTime? @default(dbgenerated("timezone('utc', now())")) @map("created_at")
 }

@@ -21,6 +21,9 @@ export const getPosts: RequestHandler = async (req, res) => {
         const posts = await prisma.post.findMany({
             take: step,
             skip: (page - 1) * step,
+            orderBy: {
+                createdAt: "desc"
+            },
             include: {
                 author: {
                     select: {
@@ -34,6 +37,12 @@ export const getPosts: RequestHandler = async (req, res) => {
                     where: {
                         commentId: null,
                         voterId: user?.id
+                    }
+                },
+                media: {
+                    select: {
+                        url: true,
+                        type: true
                     }
                 }
             }

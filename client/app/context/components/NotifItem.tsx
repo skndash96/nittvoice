@@ -14,7 +14,7 @@ export default function NotifItem({
     useEffect(() => {
         let t = setTimeout(() => {
             removeNotif(data.id);
-        }, 1900);
+        }, 2900);
 
         return () => clearTimeout(t);
     }, []);

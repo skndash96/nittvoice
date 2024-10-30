@@ -16,11 +16,8 @@ export default function PostPage() {
 
     const { addNotif } = useContext(NotifContext);
 
-    const [post, setPost] = useState<FullPost | null>(null);
-    const [comments, setComments] = useState<FullComment[]>([]);
-
-    const [postLoading, setPostLoading] = useState(true);
-    const [commentsLoading, setCommentsLoading] = useState(true);
+    const [ post, setPost ] = useState<FullPost | null>(null);
+    const [ postLoading, setPostLoading ] = useState(true);
 
     useEffect(() => {
         axios.get("/api/posts/" + postId)
@@ -32,16 +29,6 @@ export default function PostPage() {
                 addNotif({ type: "error", body: "Failed to fetch post.", id: crypto.randomUUID() });
             })
             .finally(() => setPostLoading(false));
-
-        axios.get(`/api/posts/${postId}/comments`)
-            .then(({ data }) => {
-                setComments(data);
-            })
-            .catch(e => {
-                console.error(e);
-                addNotif({ type: "error", body: "Failed to fetch comments.", id: crypto.randomUUID() });
-            })
-            .finally(() => setCommentsLoading(false));
     }, []);
 
     return (
@@ -58,7 +45,7 @@ export default function PostPage() {
                     </div>
                 </>
             ) : (
-                <div className="flex items-center text-red-500">
+                <div className="flex flex-col items-center text-red-500">
                     <div className="flex items-center text-red-500">
                         <FaExclamationTriangle className="text-6xl mr-4" />
                         <h1 className="text-2xl font-bold">Post Not Found</h1>
