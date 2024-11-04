@@ -9,7 +9,7 @@ import { UserContext } from "../contexts/userContext";
 import { NotifContext } from "../contexts/notifContext";
 
 export default function Auth() {
-    const [location, setLocation] = useLocation();
+    const [_, setLocation] = useLocation();
 
     const { refresh } = useContext(UserContext);
     const { addNotif } = useContext(NotifContext);

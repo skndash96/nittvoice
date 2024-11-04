@@ -1,5 +1,5 @@
 ;
-import { MouseEventHandler, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { NotifContext, NotifType } from "../notifContext";
 import { FaExclamationCircle, FaInfoCircle, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 

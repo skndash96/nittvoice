@@ -15,7 +15,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ q, setQ }) => {
     const { searchTerm } = useContext(SearchContext);
 
     useEffect(() => {
-        console.log("search term changef", searchTerm);
         setQ(searchTerm);
     }, [searchTerm]);
 
@@ -54,11 +53,13 @@ export default function Searchbar() {
                 </form>
             ) : (
                 <DropdownMenu>
-                    <DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="">
                             <FiSearch className="text-primary" />
+                        </Button>
                     </DropdownMenuTrigger>
 
-                    <DropdownMenuContent>
+                    <DropdownMenuContent className="max-w-72">
                         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                             <SearchInput
                                 q={q}
