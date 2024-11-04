@@ -10,7 +10,6 @@ COPY . .
 
 EXPOSE 5000
 
-RUN npm run p-gen \
-    && printf "npm run p-prod\nnpm run start\n" > entrypoint.sh
+RUN printf "npm run p-push\nnpm run start\n" > entrypoint.sh
 
 CMD ["/bin/sh", "./entrypoint.sh"]

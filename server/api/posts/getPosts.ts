@@ -11,10 +11,16 @@ export const getPosts: RequestHandler = async (req, res) => {
     const {
         page: _page,
         time: _time,
-        cat
+        cat,
+        q
     } = req.query;
 
-    const time = (cat === "hot" && _time) ? (_time === "d" ? 86400 : _time === "w" ? 604800 : _time === "m" ? 2592000 : null) : null;
+    const time = (cat === "hot" && _time) ? (
+        _time === "d" ? 86400
+        : _time === "w" ? 604800
+        : _time === "m" ? 2592000
+        : null
+    ) : null;
 
     const page = parseInt(_page as string) || 1;
 
@@ -29,8 +35,16 @@ export const getPosts: RequestHandler = async (req, res) => {
         const posts = await prisma.post.findMany({
             take: step,
             skip: (page - 1) * step,
+            where: {
+                ...(typeof q === "string" ? {
+                    OR: [
+                        { title: { contains: q, mode: "insensitive" }},
+                        { body: { contains: q, mode: "insensitive" }}
+                    ]
+                } : {})
+            },
             ...(time ? {
-                where: { createdAt: { gt: new Date(Date.now() - time) } }
+                where: { createdAt: { gt: new Date(Date.now() - time*1000) } }
             } : {}),
             orderBy: {
                 ...(cat === "hot" ? {
