@@ -62,7 +62,7 @@ export default function Auth() {
         path: "/authorize",
         params: new URLSearchParams([
             ["client_id", "9N2RgIB-5yQ23MeR"],
-            ["redirect_uri", window.location.protocol+"//"+window.location.host],
+            ["redirect_uri", window.location.protocol+"//"+window.location.host+"/auth"],
             ["response_type", "code"],
             ["grant_type", "authorization_code"],
             ["scope", "email+profile+user+openid"]
