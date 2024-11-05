@@ -1,7 +1,7 @@
 ;
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { getCookie } from "../lib/utils";
 import { Button } from "../components/ui/button";
 import { ImSpinner2 } from "react-icons/im";
@@ -62,7 +62,7 @@ export default function Auth() {
         path: "/authorize",
         params: new URLSearchParams([
             ["client_id", "9N2RgIB-5yQ23MeR"],
-            ["redirect_uri", "http://127.0.0.1:3000/auth"],
+            ["redirect_uri", window.location.protocol+"//"+window.location.host],
             ["response_type", "code"],
             ["grant_type", "authorization_code"],
             ["scope", "email+profile+user+openid"]
@@ -78,13 +78,13 @@ export default function Auth() {
             <div className="mt-4">
                 {status === -1 ? (
                     <Button className="w-40 h-12 relative overflow-hidden" asChild>
-                        <Link href={`${dAuth.protocol}://${dAuth.host}${dAuth.path}?${dAuth.params}`}>
+                        <a href={`${dAuth.protocol}://${dAuth.host}${dAuth.path}?${dAuth.params}`}>
                             <img
                                 src="/dauth.png"
                                 alt="Dauth Login"
                                 className="absolute inset-0 w-full h-full object-cover"
                             />
-                        </Link>
+                        </a>
                     </Button>
                 ) : (
                     <Button className="w-40 h-12" disabled>

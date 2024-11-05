@@ -1,0 +1,12 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://nittvoice-backend.vercel.app/api/v1/:path*"
+        },
+        {
+            "source": "/:path((?!api/).*)",
+            "destination": "/"
+        }
+    ]
+}

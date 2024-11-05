@@ -60,7 +60,7 @@ async function getAccessToken(code: string) {
         ["client_id", "9N2RgIB-5yQ23MeR"],
         ["client_secret", process.env.DAUTH_CLIENT_SECRET!],
         ["code", code],
-        ["redirect_uri", "http://127.0.0.1:3000/auth"],
+        ["redirect_uri", process.env.DAUTH_REDIRECT_URI!],
         ["grant_type", "authorization_code"]
     ]);
 
