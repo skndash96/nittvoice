@@ -10,7 +10,7 @@ export function getCookie(name: string): string | null {
         .document
         .cookie
         .split(";")
-        .find(c => c.startsWith(name + "="))
+        .find(c => c.trim().startsWith(name + "="))
         ?.split("=")
         .pop() || null;
 }
