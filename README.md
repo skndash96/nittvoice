@@ -1,6 +1,13 @@
 # NITT Voice
 Live @ [here](https://nittvoice96.vercel.app)
 
+# Tech Stack
+- Vite React
+- Express
+- Prisma
+- PostgreSQL
+- DAuth
+
 ## Auth Flow
 1. User goes to client`/login` and clicks the login with Dauth button
 2. User is redirected to provider`/api/authorize` to allow the client to access the user's info
