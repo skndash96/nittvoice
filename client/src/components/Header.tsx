@@ -38,7 +38,7 @@ export default function Header() {
                                     Profile
                                 </Link>
                                 :
-                                <Link href="/login" className="font-semibold">
+                                <Link href="/auth" className="font-semibold">
                                     Login
                                 </Link>
                             }

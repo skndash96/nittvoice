@@ -9,7 +9,7 @@ Live @ [here](https://nittvoice96.vercel.app)
 - DAuth
 
 ## Auth Flow
-1. User goes to client`/login` and clicks the login with Dauth button
+1. User goes to client`/auth` and clicks the login with Dauth button
 2. User is redirected to provider`/api/authorize` to allow the client to access the user's info
 3. User is redirected back to Client/`login?code=abc`
 4. Client makes an API request to the Server Route handler (NextJS)

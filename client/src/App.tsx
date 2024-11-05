@@ -1,6 +1,5 @@
 import './index.css'
 import { Redirect, Route, Switch } from 'wouter'
-import Login from "./views/Login"
 import { NotifsProvider } from './contexts/notifContext'
 import { UserProvider } from './contexts/userContext'
 import Header from './components/Header'
@@ -11,6 +10,7 @@ import CreatePost from './views/CreatePost'
 import PostPage from './views/PostPage'
 import Footer from './components/Footer'
 import { SearchProvider } from './contexts/searchContext'
+import Auth from './views/Auth'
 
 function App() {
     return (
@@ -25,8 +25,8 @@ function App() {
                                 <Redirect to="/posts" />
                             </Route>
 
-                            <Route path="/login">
-                                <Login />
+                            <Route path="/Auth">
+                                <Auth />
                             </Route>
 
                             <Route path="/posts">
