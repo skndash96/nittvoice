@@ -4,7 +4,7 @@ import { Link } from 'wouter';
 
 const Error: React.FC = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <main className="grow flex items-center justify-center bg-gray-100">
             <div className="text-center space-y-4">
                 <BiError className="text-red-500 text-6xl mx-auto" />
                 <h1 className="text-6xl font-bold text-gray-800">500</h1>
@@ -14,7 +14,7 @@ const Error: React.FC = () => {
                     Go Back Home
                 </Link>
             </div>
-        </div>
+        </main>
     );
 };
 
