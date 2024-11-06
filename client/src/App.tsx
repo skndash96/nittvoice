@@ -11,6 +11,7 @@ import PostPage from './views/PostPage'
 import Footer from './components/Footer'
 import { SearchProvider } from './contexts/searchContext'
 import Auth from './views/Auth'
+import Profile from './views/Profile'
 
 function App() {
     return (
@@ -27,6 +28,10 @@ function App() {
 
                             <Route path="/Auth">
                                 <Auth />
+                            </Route>
+
+                            <Route path="/profile">
+                                <Profile />
                             </Route>
 
                             <Route path="/posts">

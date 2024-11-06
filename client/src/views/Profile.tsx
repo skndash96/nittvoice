@@ -7,7 +7,7 @@ import { useLocation } from "wouter";
 import { useContext, useEffect } from "react";
 import { FaSignInAlt } from "react-icons/fa";
 
-export default function AccountPage() {
+export default function Profile() {
     const [_, setLocation] = useLocation();
     const { user, refresh } = useContext(UserContext);
     const { addNotif } = useContext(NotifContext);
