@@ -1,6 +1,6 @@
 import server from "./server";
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 const dev = process.env.NODE_ENV !== 'production';
 
 server.listen(port, () => {
