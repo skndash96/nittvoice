@@ -35,7 +35,7 @@ export default function Profile() {
     }, [user]);
     
     return (
-        <main className="p-4">
+        <main className="grow p-4">
             {user ? (
                 <>
                     <div className="flex items-center gap-4">

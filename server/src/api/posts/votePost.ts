@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
 import { PrismaClient } from "@prisma/client";
+import prisma from "../../prisma/client";
 
 // POST /api/posts/:postId/vote
 export const votePost: RequestHandler = async (req, res) => {
@@ -19,8 +20,6 @@ export const votePost: RequestHandler = async (req, res) => {
             res.status(400).end("Please Login");
             return;
         }
-
-        const prisma = new PrismaClient();
 
         const prevVote = await prisma.vote.findUnique({
             where: {

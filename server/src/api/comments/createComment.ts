@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
 import { PrismaClient } from "@prisma/client";
+import prisma from "../../prisma/client";
 
 // POST /api/comments/
 export const createComment: RequestHandler = async (req, res) => {
@@ -16,8 +17,6 @@ export const createComment: RequestHandler = async (req, res) => {
             body,
             postId
         } = req.body;
-
-        const prisma = new PrismaClient();
 
         const comment = await prisma.comment.create({
             data: {

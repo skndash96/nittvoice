@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
+import prisma from "../../prisma/client";
 
 // GET /api/posts/:postId/comments
 export const getPostComments : RequestHandler = async (req, res) => {
@@ -8,8 +9,6 @@ export const getPostComments : RequestHandler = async (req, res) => {
 
     const user = getUser(req);
 
-    const prisma = new PrismaClient();
-    
     const { _page } = req.query;
     const page = parseInt(_page as string) || 1;
     const step = 20;

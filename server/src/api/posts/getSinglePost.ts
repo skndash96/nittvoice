@@ -1,14 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
+import prisma from "../../prisma/client";
 
 // GET /api/posts/:postId/
 export const getSinglePost : RequestHandler = async (req, res) => {
     const user = getUser(req);
 
     const { postId } = req.params;
-
-    const prisma = new PrismaClient();
 
     try {
         const post = await prisma.post.findUnique({

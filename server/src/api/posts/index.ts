@@ -4,7 +4,6 @@ import { getPosts } from "./getPosts";
 import { getSinglePost } from "./getSinglePost";
 import { getPostComments } from "./getPostComments";
 import { createNewPost } from "./createNewPost";
-import multer from "multer";
 import { uploadMiddleware } from "../../lib/multer";
 const postsRouter = Router();
 

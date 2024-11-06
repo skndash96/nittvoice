@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
 import { PrismaClient } from "@prisma/client";
 import { cloudinary, UPLOAD_PRESETS } from "../../lib/cloudinary";
+import prisma from "../../prisma/client";
 
 // POST /api/posts/
 export const createNewPost: RequestHandler = async (req, res) => {
@@ -63,8 +64,6 @@ export const createNewPost: RequestHandler = async (req, res) => {
                 return;
             }
         }
-
-        const prisma = new PrismaClient();
 
         const tx = [];
 

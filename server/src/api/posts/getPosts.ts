@@ -1,11 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
 import getUser from "../actions/getUser";
+import prisma from "../../prisma/client";
 
 // GET /api/posts/
 export const getPosts: RequestHandler = async (req, res) => {
-    const prisma = new PrismaClient();
-
     const user = getUser(req);
 
     const {

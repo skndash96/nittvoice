@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
+import prisma from "../../prisma/client";
 
 export const authHandler: RequestHandler = async (req, res) => {
     try {
@@ -100,8 +101,6 @@ async function upsertUser({
     gender: string,
     phone: string
 }) {
-    const prisma = new PrismaClient();
-
     const user = {
         id,
         name,
