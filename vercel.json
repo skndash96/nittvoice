@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "https://nittvoice-backend.vercel.app/api/v1/:path*"
+            "destination": "https://nittvoice-backend.azurewebsites.net/api/v1/:path*"
         },
         {
             "source": "/:path((?!api/).*)",
