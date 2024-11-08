@@ -3,43 +3,31 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { UserContext } from "../contexts/userContext";
-import { ChangeEventHandler, FormEventHandler, useContext, useState } from "react";
+import { ChangeEventHandler, DragEventHandler, FormEventHandler, useContext, useState } from "react";
 import { FiAlertCircle } from "react-icons/fi";
 import { NotifContext } from "../contexts/notifContext";
 import axios from "axios";
-import { FaLink } from "react-icons/fa";
-import { Skeleton } from "./ui/skeleton";
+import { FaLink, FaTrash } from "react-icons/fa";
+import { useRef } from "react";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import UploadImage from "./UploadImage";
 
 export default function CreatePostForm() {
     const { user } = useContext(UserContext);
     const { addNotif } = useContext(NotifContext);
+    const dropRef = useRef<HTMLLabelElement>(null);
+    const [dropping, setDropping] = useState(false);
 
     const [title, setTitle] = useState<string>("");
     const [body, setBody] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
 
     const [uploading, setUploading] = useState(false);
-    const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-
-    const createPreview = (file: File | null) => {
-        if (!file) {
-            setPreview(null);
-            return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setPreview(reader.result);
-        };
-
-        reader.readAsDataURL(file);
-    };
 
     const handleFile: ChangeEventHandler<HTMLInputElement> = (e) => {
         const file = e.target.files?.[0] || null;
         setFile(file);
-        createPreview(file);
     };
 
     const handleSubmit: FormEventHandler = async (e) => {
@@ -88,7 +76,6 @@ export default function CreatePostForm() {
             await axios.post("/api/posts", formData);
             setTitle("");
             setBody("");
-            setPreview(null);
 
             addNotif({
                 id: crypto.randomUUID(),
@@ -105,6 +92,7 @@ export default function CreatePostForm() {
             setUploading(false);
         }
     };
+
 
     return (
         <div className="py-8">
@@ -135,62 +123,12 @@ export default function CreatePostForm() {
                         onChange={(e) => setBody(e.target.value)}
                     />
 
-                    <div className="flex justify-between items-center">
-                        <div className="flex">
-                            <label htmlFor="file" className="cursor-pointer flex items-center gap-2">
-                                <FaLink className="w-6 h-6 text-emerald-500" />
-                                Attach
-                            </label>
-
-                            <Input
-                                id="file"
-                                onChange={handleFile}
-                                type="file"
-                                accept="image/webp, image/jpeg, image/png, image/gif, video/mp4, video/webm"
-                                placeholder="Attach Image"
-                                className="h-0 p-0 w-0"
-                            />
-                        </div>
-
-                        <Button disabled={!user || uploading} onClick={handleSubmit} className="w-fit ml-auto">
-                            {uploading ? "Uploading..." : "Post"}
-                        </Button>
-                    </div>
+                    <UploadImage file={file} setFile={setFile} />
+                    
+                    <Button disabled={!user || uploading} onClick={handleSubmit} className="w-fit ml-auto">
+                        {uploading ? "Uploading..." : "Post"}
+                    </Button>
                 </form>
-
-                <div className="px-4">
-                    <h1 className="text-lg font-bold">
-                        Preview
-                    </h1>
-
-                    <div className="mt-4 p-4 flex flex-col gap-2 border-2 border-emerald-500 border-dashed rounded-lg">
-                        <h2 className="text-lg font-semibold">
-                            {title.length ? title : (
-                                <Skeleton className="w-full h-4" />
-                            )}
-                        </h2>
-
-                        <p>
-                            {body.length || title.length ? body : (
-                                <div className="mt-4 flex flex-col gap-2">
-                                    <Skeleton className="w-1/2 h-2" />
-                                    <Skeleton className="w-3/4 h-2" />
-                                    <Skeleton className="w-1/4 h-2" />
-                                </div>
-                            )}
-                        </p>
-                        
-                        {preview && (
-                            file?.type.startsWith("video") ? (
-                                // @ts-ignore
-                                <video src={preview} controls />
-                            ) : (
-                                // @ts-ignore
-                                <img src={preview} alt="Preview" />
-                            )
-                        )}
-                    </div>
-                </div>
             </div>
         </div>
     );
