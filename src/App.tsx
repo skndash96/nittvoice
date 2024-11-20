@@ -12,6 +12,7 @@ import Footer from './components/Footer'
 import { SearchProvider } from './contexts/searchContext'
 import Auth from './views/Auth'
 import Profile from './views/Profile'
+import ProfilePage from './views/ProfilePage'
 
 function App() {
     return (
@@ -30,6 +31,10 @@ function App() {
                                 <Auth />
                             </Route>
 
+                            <Route path="/profiles/:userId">
+                                <ProfilePage />
+                            </Route>
+                            
                             <Route path="/profile">
                                 <Profile />
                             </Route>

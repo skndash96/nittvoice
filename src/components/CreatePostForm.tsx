@@ -3,32 +3,21 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { UserContext } from "../contexts/userContext";
-import { ChangeEventHandler, DragEventHandler, FormEventHandler, useContext, useState } from "react";
+import { FormEventHandler, useContext, useState } from "react";
 import { FiAlertCircle } from "react-icons/fi";
 import { NotifContext } from "../contexts/notifContext";
 import axios from "axios";
-import { FaLink, FaTrash } from "react-icons/fa";
-import { useRef } from "react";
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
 import UploadImage from "./UploadImage";
 
 export default function CreatePostForm() {
     const { user } = useContext(UserContext);
     const { addNotif } = useContext(NotifContext);
-    const dropRef = useRef<HTMLLabelElement>(null);
-    const [dropping, setDropping] = useState(false);
 
     const [title, setTitle] = useState<string>("");
     const [body, setBody] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
 
     const [uploading, setUploading] = useState(false);
-
-    const handleFile: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const file = e.target.files?.[0] || null;
-        setFile(file);
-    };
 
     const handleSubmit: FormEventHandler = async (e) => {
         e.preventDefault();

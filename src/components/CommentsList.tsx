@@ -1,12 +1,11 @@
 import { FaCommentAlt } from "react-icons/fa";
-import CardSkeleton from "./CardSkeleton";
 import CommentComponent from "./Comment";
 import { FullComment } from "../lib/types";
-import End from "./End";
 import { useContext, useRef, useState } from "react";
 import axios from "axios";
 import { NotifContext } from "../contexts/notifContext";
 import CommentInput from "./CommentInput";
+import List from "./List";
 
 export default function CommentsList({
     postId
@@ -46,31 +45,24 @@ export default function CommentsList({
     };
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="h-full flex flex-col gap-2">
             <CommentInput postId={postId} onCommentAdd={(c) => setComments(prev => [c, ...prev])} />
 
-            <ul className="mt-4">
-                {comments.map(comment => (
-                    <CommentComponent data={comment} key={comment.id} />
-                ))}
-            </ul>
-
-            <End onReach={handleEnd} />
-
-            <div className="-mt-8 flex flex-col gap-4">
-                {loading && (
-                    new Array(2).fill(null).map((_, i) => (
-                        <CardSkeleton cardHeight="sm" key={i} />
-                    ))
-                )}
+            <div className="mt-4 grow overflow-y-auto">
+                <List
+                    data={comments}
+                    Item={CommentComponent}
+                    loading={loading}
+                    skeletonHeight="sm"
+                    EmptyDataComponent={() => (
+                        <div className="flex flex-col items-center gap-2">
+                            <FaCommentAlt className="text-4xl text-neutral-400" />
+                            <p className="text-neutral-400">No Comments yet.</p>
+                        </div>
+                    )}
+                    onEnd={handleEnd}
+                />
             </div>
-
-            {!loading && comments.length === 0 && (
-                <div className="flex flex-col items-center gap-2">
-                    <FaCommentAlt className="text-4xl text-neutral-400" />
-                    <p className="text-neutral-400">No data yet</p>
-                </div>
-            )}
         </div>
     );
 }

@@ -4,6 +4,11 @@ export type User = {
     email: string
 }
 
+export type Profile = User & {
+    posts: FullPost[]
+    comments: Comment[]
+}
+
 export type Post = {
     id: string
     title: string

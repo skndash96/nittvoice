@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "../components/ui/button";
 import { NotifContext } from "../contexts/notifContext";
 import { UserContext } from "../contexts/userContext";

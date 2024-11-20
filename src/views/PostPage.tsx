@@ -13,7 +13,7 @@ export default function PostPage() {
     const { postId: _postId } = useParams();
     
     if (!_postId) return (
-        <Redirect to="/404" />
+        <Redirect to="/" />
     );
 
     const postId = typeof _postId === "object" ? _postId[0] : _postId;

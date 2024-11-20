@@ -49,7 +49,9 @@ export default function PostComponent({
 
     return (
         <div className="p-2 flex flex-col gap-2">
-            <Avatar author={data.author} timestamp={data.createdAt} />
+            <Link href={`/profiles/${data.author.id}`}>
+                <Avatar author={data.author} timestamp={data.createdAt} />
+            </Link>
 
             <Link href={`/posts/${data.id}`}>
                 <h3 className="font-semibold text-lg break-words">
